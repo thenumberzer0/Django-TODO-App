@@ -1,0 +1,61 @@
+{% extends 'todo/base.html' %}
+{% block title %}Sign up{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1>Create your account</h1>
+            <p class="auth-subtitle">Start tracking your tasks</p>
+        </div>
+
+        {% if form.non_field_errors %}
+            <div class="form-errors">
+                {% for error in form.non_field_errors %}
+                    <div class="error-text">{{ error }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">Username</label>
+                {{ form.username }}
+                {% for error in form.username.errors %}
+                    <div class="error-text">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Email</label>
+                {{ form.email }}
+                {% for error in form.email.errors %}
+                    <div class="error-text">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.password1.id_for_label }}">Password</label>
+                {{ form.password1 }}
+                {% if form.password1.help_text %}
+                    <div class="help-text">{{ form.password1.help_text|safe }}</div>
+                {% endif %}
+                {% for error in form.password1.errors %}
+                    <div class="error-text">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.password2.id_for_label }}">Confirm password</label>
+                {{ form.password2 }}
+                {% for error in form.password2.errors %}
+                    <div class="error-text">{{ error }}</div>
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn-primary">Register</button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Have an account? <a href="{% url 'login' %}">Log in</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

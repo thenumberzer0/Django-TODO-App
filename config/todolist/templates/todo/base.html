@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Todo{% endblock %} | My Todo App</title>
+    <style>
+        :root {
+            --bg: #f4f5f8;
+            --card-bg: #ffffff;
+            --border: #e5e7eb;
+            --text: #1f2330;
+            --text-muted: #6b7280;
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --danger: #dc2626;
+            --danger-hover: #b91c1c;
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --radius-sm: 8px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+        }
+
+        .page-wrapper {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 24px 20px 60px;
+        }
+
+        /* ---------- nav ---------- */
+        .nav-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 14px 20px;
+            margin-bottom: 24px;
+        }
+        .nav-links, .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .nav-brand {
+            font-weight: 700;
+            margin-right: 8px;
+        }
+        .nav-card a {
+            text-decoration: none;
+            color: var(--primary);
+            font-size: 0.95em;
+        }
+        .nav-card a:hover { color: var(--primary-hover); }
+        .nav-user {
+            font-size: 0.9em;
+            color: var(--text-muted);
+        }
+
+        /* ---------- messages ---------- */
+        .messages {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .messages li {
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+            color: #3730a3;
+            padding: 10px 16px;
+            border-radius: var(--radius-md);
+            font-size: 0.92em;
+        }
+
+        /* ---------- generic buttons ---------- */
+        .btn-primary, .btn-danger, .btn-secondary {
+            border: none;
+            border-radius: var(--radius-md);
+            padding: 10px 18px;
+            font-size: 0.95em;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-primary { background: var(--primary); color: #fff; width: 100%; }
+        .btn-primary:hover { background: var(--primary-hover); }
+        .btn-secondary { background: #f3f4f6; color: var(--text); }
+        .btn-secondary:hover { background: #e5e7eb; }
+        .btn-danger { background: #fee2e2; color: var(--danger); }
+        .btn-danger:hover { background: #fecaca; color: var(--danger-hover); }
+
+        /* ---------- auth pages (login/signup) ---------- */
+        .auth-page {
+            display: flex;
+            justify-content: center;
+            padding-top: 24px;
+        }
+        .auth-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 36px 32px;
+            width: 100%;
+            max-width: 380px;
+        }
+        .auth-header { margin-bottom: 24px; text-align: center; }
+        .auth-header h1 { font-size: 1.5em; margin: 0 0 6px; }
+        .auth-subtitle { color: var(--text-muted); font-size: 0.9em; margin: 0; }
+        .auth-form { display: flex; flex-direction: column; gap: 16px; }
+        .auth-footer { text-align: center; margin-top: 20px; font-size: 0.9em; color: var(--text-muted); }
+        .auth-footer a { color: var(--primary); text-decoration: none; font-weight: 600; }
+        .auth-footer a:hover { color: var(--primary-hover); }
+
+        /* ---------- form fields (shared by all forms) ---------- */
+        .form-group { display: flex; flex-direction: column; gap: 6px; }
+        .form-group label { font-size: 0.85em; font-weight: 600; color: var(--text); }
+        .input-field {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 0.95em;
+            background: #fafafa;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #fff;
+        }
+        .help-text, .help-text ul {
+            font-size: 0.78em;
+            color: var(--text-muted);
+            margin: 0;
+            padding-left: 18px;
+        }
+        .error-text { font-size: 0.82em; color: var(--danger); }
+        .form-errors {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            margin-bottom: 16px;
+        }
+
+        /* ---------- task cards ---------- */
+        .page-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 28px 28px 8px;
+        }
+        .page-card h1 { margin-top: 0; }
+        .task-list { list-style: none; padding: 0; margin: 0; }
+        .task-card {
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 16px 18px;
+            margin-bottom: 16px;
+            background: #fcfcfd;
+        }
+        .task-card .meta { font-size: 0.85em; color: var(--text-muted); margin: 8px 0; }
+        .status {
+            display: inline-block;
+            font-size: 0.78em;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 999px;
+        }
+        .status.done { background: #dcfce7; color: #166534; }
+        .status.pending { background: #fef3c7; color: #92400e; }
+        .task-actions { display: flex; gap: 10px; margin-top: 12px; }
+        .task-actions form { display: inline; }
+        .add-task-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.92em;
+        }
+        .add-task-link:hover { color: var(--primary-hover); }
+    </style>
+</head>
+<body>
+    <div class="page-wrapper">
+        <div class="nav-card">
+            <div class="nav-links">
+                <span class="nav-brand">Todo</span>
+                <a href="{% url 'home' %}">Home</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'upload_task' %}">New Task</a>
+                {% endif %}
+            </div>
+            <div class="nav-actions">
+                {% if user.is_authenticated %}
+                    <span class="nav-user">Hi, {{ user.username }}</span>
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-secondary">Log out</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}">Log in</a>
+                    <a href="{% url 'signup' %}">Sign up</a>
+                {% endif %}
+            </div>
+        </div>
+
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

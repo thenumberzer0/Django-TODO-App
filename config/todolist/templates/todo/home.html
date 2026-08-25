@@ -1,0 +1,50 @@
+{% extends 'todo/base.html' %}
+
+{% block title %}My Tasks{% endblock %}
+
+{% block content %}
+<div class="page-card">
+    <h1>All Tasks</h1>
+    <a href="{% url 'upload_task' %}" class="add-task-link">+ Add a task</a>
+
+    {% if tasks %}
+        <ul class="task-list">
+            {% for task in tasks %}
+                <li class="task-card">
+                    <div class="task-info">
+                        <strong>{{ task.title }}</strong>
+                        <p>{{ task.desc }}</p>
+
+                        <div class="meta">
+                            Due: {{ task.time|date:"M d, Y" }}
+                            &nbsp;|&nbsp;
+                            Urgency: {{ task.urgency }}
+                        </div>
+
+                        {% if task.done %}
+                            <span class="status done">Completed</span>
+                        {% else %}
+                            <span class="status pending">Pending</span>
+                        {% endif %}
+
+                        <div class="task-actions">
+                            <form method="post" action="{% url 'toggle_task' task.pk %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-secondary">
+                                    {% if task.done %}Mark Pending{% else %}Mark Done{% endif %}
+                                </button>
+                            </form>
+                            <form method="post" action="{% url 'delete_task' task.pk %}">
+                                {% csrf_token %}
+                                <button type="submit" class="btn-danger">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>You have no tasks yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
