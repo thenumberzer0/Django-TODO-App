@@ -27,10 +27,6 @@ class SignUpForm(UserCreationForm):
 
 
 class LoginForm(AuthenticationForm):
-    """
-    Custom login form. AuthenticationForm works fine as-is, but it gives us
-    no way to add CSS classes/placeholders to its fields without subclassing.
-    """
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['username'].widget.attrs.update({
